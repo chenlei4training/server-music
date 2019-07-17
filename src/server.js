@@ -22,7 +22,7 @@ app.get('/', function (req, res) {
 //测试 req.params 和  req.query
 app.get('/about/:id', function (req, res) {
     if (!req.body) return res.sendStatus(400)
-    res.send('welcome id=' + req.params.id +' user='+req.query.user)
+    res.send('welcome id=' + req.params.id + ' user=' + req.query.user)
 });
 
 
