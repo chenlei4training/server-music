@@ -16,8 +16,6 @@ let allowCrossDomain = (req, res, next) => {
 }
 app.use(allowCrossDomain)
 
-
-
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
@@ -34,10 +32,7 @@ app.get('/about/:id', function (req, res) {
     res.send('welcome id=' + req.params.id + ' user=' + req.query.user)
 });
 
-
 app.use('/user', userRouter);
-
-
 
 const port = 2019
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
