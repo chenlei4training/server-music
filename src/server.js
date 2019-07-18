@@ -34,5 +34,29 @@ app.get('/about/:id', function (req, res) {
 
 app.use('/user', userRouter);
 
-const port = 2019
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+//content type  application/json
+app.use(bodyParser.json())
+
+//跟目录路由， 也就是‘/’的处理方法,'/'的handler
+app.get("/", (request, response) =>{
+    response.send('这是我的测试服务器，你想看什么')
+})
+
+app.use('/user',require('./router/user'))
+
+
+
+//404
+app.use(function (req, res, next) {
+    res.status(404).send("Sorry can't find that!")
+})
+
+//500 服务器端bug
+app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+})
+
+const portNum = 2019
+//``````111 `表示js es6的template模板
+app.listen(portNum, () => console.log(`Example app listening on port ${portNum}!`))

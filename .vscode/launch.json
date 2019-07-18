@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Node http server",
+            "name": "express web server",
             "program": "${workspaceFolder}\\src/server.js"
         }
     ]
