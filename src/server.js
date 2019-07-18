@@ -3,11 +3,20 @@ const bodyParser = require('body-parser')
 const userRouter = require('./router/user')
 
 const app = express()
-app.use('*', (req, res, next) => {
+// app.use('*', (req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , token');
+//     next()
+// })
+
+let allowCrossDomain = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , token');
     next()
-})
+}
+app.use(allowCrossDomain)
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
@@ -30,5 +39,5 @@ app.use('/user', userRouter);
 
 
 
-
-app.listen(2019, () => console.log('Example app listening on port 2019!'))
+const port = 2019
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
