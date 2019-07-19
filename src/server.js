@@ -54,6 +54,12 @@ app.use(function (req, res, next) {
 //500 服务器端bug
 app.use(function (err, req, res, next) {
     console.error(err.stack)
+
+    if (err.name === 'UnauthorizedError') {
+        res.json({code:0,msg:'token 有问题,可能是过期了'})
+        return
+    }
+
     res.status(500).send('Something broke!')
 })
 
