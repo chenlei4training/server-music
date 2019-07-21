@@ -24,11 +24,12 @@ router.post("/check", (req, res) => {
     const { user, password } = req.body
     //res.json({user,password})
     let where = { loginName: user, password }
-    let proj = { isVIP: 1 }
+    let proj = { isVIP: 1, token: 1 }
 
-    accoutDB.col.find(where, proj).toArray((err, resulst) => {
-        if (resulst && resulst.length > 0) {
+    accoutDB.col.find(where, proj).toArray((err, result) => {
+        if (result && result.length > 0) {
             //有数据库返回的结果，说明用户密码正确
+            res.json({ code: 1, token:result[0].token })
         } else {
             //status
             res.json({ code: 0, msg: "用户密码错误" })
@@ -46,18 +47,18 @@ router.post('/register', (req, res) => {
         } else {
             jwtPayLoad.userName = user
             let token = jwt.sign(jwtPayLoad, secretKey, jwtOption)
-            
+
             const accoutDoc = {
-                loginName:user,
-                password:password,
-                isVIP:jwtPayLoad.isVIP,
+                loginName: user,
+                password: password,
+                isVIP: jwtPayLoad.isVIP,
                 token,
             }
-            accoutDB.col.insert(accoutDoc).then((result)=>{
-                if (result.insertedCount===1){
+            accoutDB.col.insert(accoutDoc).then((result) => {
+                if (result.insertedCount === 1) {
                     res.json({ code: 1, token })
-                }else{
-                    res.json({ code: 20, msg:'数据库错误,无法插入新用户'})
+                } else {
+                    res.json({ code: 20, msg: '数据库错误,无法插入新用户' })
                 }
             })
         }
