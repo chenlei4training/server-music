@@ -5,14 +5,16 @@ let jwt = require('jsonwebtoken');
 
 let injectToken = require('../middleware/injectToken')
 
-let jwtPayLoad={
-    isVIP:true,
+let accoutDB = require('../db/account')
+
+let jwtPayLoad = {
+    isVIP: false,
     //isAdmin:true
-    userName:undefined,
+    userName: undefined,
 }
 
-let jwtOption={ //token 约定的配置
-    expiresIn:"2 days"
+let jwtOption = { //token 约定的配置
+    expiresIn: "2 days"
 }
 
 const secretKey = require('../secretKey/key')
@@ -21,21 +23,52 @@ const secretKey = require('../secretKey/key')
 router.post("/check", (req, res) => {
     const { user, password } = req.body
     //res.json({user,password})
+    let where = { loginName: user, password }
+    let proj = { isVIP: 1 }
 
-    if(user === 'superman' && password ==='123'){
-        jwtPayLoad.userName = user
-        let token = jwt.sign(jwtPayLoad,secretKey,jwtOption)
-        res.json({code:1,token})
-
-    }else{
-        //status
-        res.json({code:0,msg:"用户密码错误"})
-    }
+    accoutDB.col.find(where, proj).toArray((err, resulst) => {
+        if (resulst && resulst.length > 0) {
+            //有数据库返回的结果，说明用户密码正确
+        } else {
+            //status
+            res.json({ code: 0, msg: "用户密码错误" })
+        }
+    })
 })
 
-router.post('/isVIP',injectToken,(req,res)=>{
+router.post('/register', (req, res) => {
+    const { user, password } = req.body
+    let where = { loginName: user }
+
+    accoutDB.col.find(where).toArray((err, resulst) => {
+        if (resulst.length > 0) {
+            res.json({ code: 0, msg: '该用户名已经被使用了，请换一个用户名' })
+        } else {
+            jwtPayLoad.userName = user
+            let token = jwt.sign(jwtPayLoad, secretKey, jwtOption)
+            
+            const accoutDoc = {
+                loginName:user,
+                password:password,
+                isVIP:jwtPayLoad.isVIP,
+                token,
+            }
+            accoutDB.col.insert(accoutDoc).then((result)=>{
+                if (result.insertedCount===1){
+                    res.json({ code: 1, token })
+                }else{
+                    res.json({ code: 20, msg:'数据库错误,无法插入新用户'})
+                }
+            })
+        }
+    })
+})
+
+
+router.post('/isVIP', injectToken, (req, res) => {
     const isVIP = req.user.isVIP
-    res.json({code:1,isVIP})
+    res.json({ code: 1, isVIP })
+
 
 })
 module.exports = router
