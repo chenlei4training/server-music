@@ -8,30 +8,34 @@ async function connect() {
 
     try {
         let connection = await mongoClient.connect(DB_CONN_STR,{ useNewUrlParser: true })
-        let database = connection.db('my_music')
+        let database = connection.db('my_music111')
+
         
-        let accountCol =database.collection('none_empty')
+        let accountCol = database.collection('account')
 
-        let count = await accountCol.countDocuments()
+        //测试一下 account里有没document
+        let cursor = accountCol.find({}).limit(1)
 
-        console.log('count:',count)
-        return new Promise((resovle,reject) => {
-            if(count>0){
+        let array = await cursor.toArray()
+
+        if(array.length>0){
+            console.log('doc',array[0])
+            return new Promise((resovle,reject) => {
                 console.log('数据库连接成功')
                 resovle(true)
-            }else{
-                console.log('database can not connect')
+            })
+        }else{
+            return new Promise((resovle) => {
                 resovle(false)
-            }
-        })
+            })
+        }
       
     } catch (err) {
-        console.error(err.stack)
+        console.err(err.stack)
         return new Promise((resovle) => {
             resovle(false)
         })
     }
 }
-
 
 module.exports = { connect }

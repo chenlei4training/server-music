@@ -9,7 +9,7 @@ mongClient.connect().then((result) => {
         startExpress()
     }else{
         //do not start express
-        console.log('数据库没有连接成功，所以启动express')
+        console.log('数据库没有连接成功，但启动express')
     }
 })
 
