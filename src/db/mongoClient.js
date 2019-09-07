@@ -15,7 +15,7 @@ async function connect() {
         console.log('connecting to db')
         let connection = await MongoClient.connect(DB_CONN_STR, { useNewUrlParser: true });
         console.log('connected')
-        database = connection.db('music')
+        database = connection.db('my_music')
         // accoutDB.db = database
 
         accountCol = database.collection('account')
