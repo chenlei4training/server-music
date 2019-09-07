@@ -7,7 +7,7 @@ async function connect() {
     console.log('开始连接数据库')
 
     try {
-        let connection = await mongoClient.connect(DB_CONN_STR)
+        let connection = await mongoClient.connect(DB_CONN_STR,{ useNewUrlParser: true })
         let database = connection.db('my_music')
         let accountCol = database.collection('account')
 
