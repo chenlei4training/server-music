@@ -5,7 +5,7 @@ let jwt = require('jsonwebtoken');
 
 let injectToken = require('../middleware/injectToken')
 
-let accoutDB = require('../db/account')
+let cols = require('../db/db').collections
 
 let jwtPayLoad = {
     isVIP: false,
@@ -26,7 +26,7 @@ router.post("/check", (req, res) => {
     let where = { loginName: user, password }
     let proj = { isVIP: 1, token: 1 }
 
-    accoutDB.col.find(where, proj).toArray((err, result) => {
+    accountCol.find(where, proj).toArray((err, result) => {
         if (result && result.length > 0) {
             //有数据库返回的结果，说明用户密码正确
             res.json({ code: 1, token:result[0].token })
@@ -38,6 +38,35 @@ router.post("/check", (req, res) => {
 })
 
 router.post('/register', (req, res) => {
+    const {user,password} = req.body
+    jwtPayLoad.userName = user
+    
+    token = jwt.sign(jwtPayLoad, secretKey, jwtOption)
+    const accoutDoc = {
+        loginName: user,
+        password: password,
+        isVIP: false,
+        token
+    }
+    cols.accountCol.insertOne(accoutDoc)
+        .then((result) => {
+            if (re-sult.result.ok) {
+                res.json({ code: 1, token})
+            } else {
+                res.json({ code: 20, msg: '数据库错误,无法插入新用户' })
+            }
+        })
+    .catch((err)=>{
+        if(err.code ===11000){
+            res.json({ code: 20, msg: '用户名重复' })
+        }else{
+            console.error('db insert account error',err)
+        }
+    })
+
+})
+
+router.post('/register1', (req, res) => {
     const { user, password } = req.body
     let where = { loginName: user }
 

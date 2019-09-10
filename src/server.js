@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const userRouter = require('./router/user')
 
-const appDBClient = require('./db/mongoClient')
+const appDBClient = require('./db/db')
 
 function startExpress() {
 
