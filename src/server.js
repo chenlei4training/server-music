@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const userRouter = require('./router/user')
 
-const mongoDB = require('./db/mongodbClient')
+const mongoDB = require('./db/db')
 
 mongoDB.connect().then((result) => {
     if (result) {
