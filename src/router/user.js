@@ -18,20 +18,18 @@ let jwtOption={ //token 约定的配置
 
 const secretKey = require('../secretKey/key')
 
-//TODO 增加 json web token
 router.post("/check", (req, res) => {
     const { user, password } = req.body
-    //res.json({user,password})
+    let where = {loginName:user,password}
 
-    if(user === 'superman' && password ==='123'){
-        jwtPayLoad.userName = user
-        let token = jwt.sign(jwtPayLoad,secretKey,jwtOption)
-        res.json({code:1,token})
-
-    }else{
-        //status
-        res.json({code:0,msg:"用户密码错误"})
-    }
+    cols.accountCol.find(where).toArray((err,result)=>{
+        if (result && result.length === 1){
+            res.json({code:1,token:result[0].token})
+        }else{
+            res.json({code:0,msg:'用户密码有误'})
+        }
+    })
+    
 })
 
 router.post('/isVIP',injectToken,(req,res)=>{
