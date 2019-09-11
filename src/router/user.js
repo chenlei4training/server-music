@@ -24,9 +24,8 @@ router.post("/check", (req, res) => {
     const { user, password } = req.body
     //res.json({user,password})
     let where = { loginName: user, password }
-    let proj = { isVIP: 1, token: 1 }
 
-    accountCol.find(where, proj).toArray((err, result) => {
+    cols.accountCol.find(where).toArray((err, result) => {
         if (result && result.length > 0) {
             //有数据库返回的结果，说明用户密码正确
             res.json({ code: 1, token:result[0].token })
@@ -50,7 +49,7 @@ router.post('/register', (req, res) => {
     }
     cols.accountCol.insertOne(accoutDoc)
         .then((result) => {
-            if (re-sult.result.ok) {
+            if (result.result.ok) {
                 res.json({ code: 1, token})
             } else {
                 res.json({ code: 20, msg: '数据库错误,无法插入新用户' })
